@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Геометрическая прогрессия | Адал Азамат</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #16a34a;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            user-select: none;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 540px;
+            background: var(--card);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            position: relative;
+        }
+
+        .proctor-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+        }
+
+        .badge-ok { background: #dcfce7; color: var(--success); }
+        .badge-warn { background: #fef3c7; color: var(--warning); }
+        .badge-danger { background: #fee2e2; color: var(--danger); }
+
+        h1 { font-size: 22px; margin: 0 0 8px 0; line-height: 1.3; }
+        p { color: var(--muted); font-size: 15px; line-height: 1.5; margin: 0 0 18px 0; }
+
+        .formula-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 18px;
+            color: var(--primary-dark);
+        }
+
+        .rules-note {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 18px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            outline: none;
+            margin-bottom: 16px;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        input:focus { border-color: var(--primary); }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s, opacity 0.2s;
+        }
+
+        .btn:hover:not(:disabled) { background: var(--primary-dark); }
+        .btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid #e2e8f0;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 10px;
+            margin-top: 14px;
+        }
+
+        .btn-ghost:hover:not(:disabled) {
+            background: #f8fafc;
+            color: var(--text);
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #3730a3;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .task-text {
+            font-size: 16px;
+            color: var(--text);
+            margin-bottom: 16px;
+            line-height: 1.55;
+        }
+
+        /* Блок интерактивной «Ловушки» */
+        .trap-box {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .trap-condition {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .trap-tokens {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .token-btn {
+            padding: 10px 14px;
+            font-size: 19px;
+            font-weight: 700;
+            border-radius: 10px;
+            border: 2px solid #cbd5e1;
+            background: #ffffff;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .token-btn:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .token-btn.wrong-pick {
+            border-color: var(--warning);
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
+        .token-btn.correct-pick {
+            border-color: var(--success);
+            background: #dcfce7;
+            color: var(--success);
+        }
+
+        .trap-feedback {
+            font-size: 13px;
+            font-weight: 600;
+            min-height: 20px;
+            margin-top: 6px;
+        }
+
+        /* Шкалы рефлексии */
+        .slider-group {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13.5px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .slider-val {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .alert-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.94);
+            color: white;
+            z-index: 100;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 24px;
+        }
+
+        .alert-overlay.is-penalized {
+            background: rgba(185, 28, 28, 0.96);
+        }
+
+        .alert-overlay h2 { font-size: 24px; margin-bottom: 10px; }
+        .alert-overlay p { color: #e2e8f0; font-size: 15px; max-width: 390px; }
+        .alert-overlay button {
+            background: white;
+            color: #0f172a;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            margin-top: 16px;
+            cursor: pointer;
+        }
+
+        .result-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px;
+            background: #f8fafc;
+            margin-bottom: 14px;
+        }
+
+        .final-grade-box {
+            text-align: center;
+            padding: 16px;
+            border-radius: 14px;
+            background: #eff6ff;
+            border: 2px solid #bfdbfe;
+            margin-bottom: 16px;
+        }
+
+        .final-grade-box .score-num {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        .stat-row:last-child { border-bottom: none; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div class="alert-overlay" id="cheatAlert">
+        <h2 id="alertTitle">⚠️ Предупреждение</h2>
+        <p id="alertMessage"></p>
+        <p id="awayTimeInfo" style="font-weight: 700; color: #fff;"></p>
+        <button onclick="closeAlert()">Продолжить работу</button>
+    </div>
+
+    <div class="container">
+        <div class="proctor-bar" id="proctorBar" style="display: none;">
+            <span>⏱ <span id="timerDisplay">00:00</span></span>
+            <span id="coeffBadge" class="badge badge-ok">🛡 K<sub>чест</sub> = 1.00</span>
+        </div>
+
+        <!-- Экран 1: Старт -->
+        <div id="startScreen">
+            <div class="tag">9 класс • Алгебра • Адал Азамат</div>
+            <h1>Формула n-го члена геометрической прогрессии</h1>
+            <p>Для тебя сгенерирован индивидуальный вариант из 4 задач.</p>
+            <div class="formula-box">b<sub>n</sub> = b<sub>1</sub> · q<sup>n−1</sup></div>
+            <div class="rules-note">
+                <strong>Правило «Адал Азамат»:</strong> первый выход прощается без штрафа. Со 2-го выхода или при признаках разделённого экрана (split screen) коэффициент <b>K</b> снижается: <b>1.00 → 0.85 → 0.70 → 0.50</b>.
+            </div>
+            <input type="text" id="studentName" placeholder="Введи Фамилию и Имя" autocomplete="off">
+            <button class="btn" onclick="startTest()">Получить свой вариант</button>
+        </div>
+
+        <!-- Экран 2: Задания -->
+        <div id="quizScreen" class="hidden">
+            <div class="tag" id="taskCategory">Задача 1 из 4</div>
+            <div class="task-text" id="taskText"></div>
+            <input type="number" id="answerInput" placeholder="Введи числовой ответ..." inputmode="numeric">
+            <button class="btn" onclick="submitAnswer()">Подтвердить ответ</button>
+        </div>
+
+        <!-- Экран 3: Интерактивная рефлексия и «Найди ловушку» -->
+        <div id="reflectionScreen" class="hidden">
+            <div class="tag">Финальный шаг • Рефлексия (на оценку не влияет)</div>
+            <h1>Найди ловушку и оцени себя</h1>
+            <p style="margin-bottom: 12px;">Твои ответы уже сохранены. Нажми на <b>ошибочный фрагмент</b> в записи решения ниже, чтобы открыть результат:</p>
+
+            <div class="trap-box">
+                <div class="trap-condition">Дано: <b>b₁ = 5</b>, <b>q = 2</b>. Ученик находил <b>b₄</b> и допустил классическую ошибку:</div>
+                <div class="trap-tokens" id="trapTokens">
+                    <button type="button" class="token-btn" onclick="checkTrap(this, false)">b₄</button>
+                    <span style="font-weight:700;">=</span>
+                    <button type="button" class="token-btn" onclick="checkTrap(this, false)">5</button>
+                    <span style="font-weight:700;">·</span>
+                    <button type="button" class="token-btn" id="trapCorrectBtn" onclick="checkTrap(this, true)">2⁴</button>
+                    <span style="font-weight:700;">=</span>
+                    <button type="button" class="token-btn" onclick="checkTrap(this, false)">80</button>
+                </div>
+                <div class="trap-feedback" id="trapFeedback" style="color: var(--muted);">Нажми на элемент с ошибкой</div>
+            </div>
+
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span>1. Понял(а), почему степень равна n − 1?</span>
+                    <span class="slider-val" id="val1">4 / 5</span>
+                </div>
+                <input type="range" id="ref1" min="1" max="5" value="4" oninput="updateSlider('ref1', 'val1')">
+                <div class="slider-labels"><span>Пока путаюсь</span><span>Всё предельно ясно</span></div>
+            </div>
+
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span>2. Уверенно применяю формулу bₙ = b₁ · qⁿ⁻¹?</span>
+                    <span class="slider-val" id="val2">4 / 5</span>
+                </div>
+                <input type="range" id="ref2" min="1" max="5" value="4" oninput="updateSlider('ref2', 'val2')">
+                <div class="slider-labels"><span>Нужна практика</span><span>Решаю свободно</span></div>
+            </div>
+
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span>3. Насколько честной была моя работа?</span>
+                    <span class="slider-val" id="val3">5 / 5</span>
+                </div>
+                <input type="range" id="ref3" min="1" max="5" value="5" oninput="updateSlider('ref3', 'val3')">
+                <div class="slider-labels"><span>Были сомнения</span><span>100% Адал Азамат</span></div>
+            </div>
+
+            <button class="btn" id="toResultBtn" disabled onclick="showFinalResults()">Сначала найди ошибку в примере ☝️</button>
+        </div>
+
+        <!-- Экран 4: Итог -->
+        <div id="resultScreen" class="hidden">
+            <div class="tag">Паспорт академической честности</div>
+            <h1 id="resNameTitle">Результат</h1>
+
+            <div class="final-grade-box">
+                <div style="font-size: 13px; color: var(--muted); font-weight: 600;">ИТОГОВЫЙ БАЛЛ ФО (ИЗ 10)</div>
+                <div class="score-num" id="finalScore10">10 / 10</div>
+                <div style="font-size: 12px; color: var(--muted); margin-top: 4px;" id="formulaBreakdown"></div>
+            </div>
+            
+            <div class="result-card">
+                <div class="stat-row">
+                    <span>Вариант №:</span>
+                    <strong id="resVariant">—</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Верных ответов:</span>
+                    <strong id="resScore">—</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Коэффициент честности (K):</span>
+                    <strong id="resCoeff">—</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Время работы / вне фокуса:</span>
+                    <strong id="resTime">—</strong>
+                </div>
+                <div class="stat-row">
+                    <span>Рефлексия («Ловушка» / самооценка):</span>
+                    <strong id="resReflection">—</strong>
+                </div>
+            </div>
+            <p style="font-size: 13px; text-align: center; margin-bottom: 0;">Покажи этот экран учителю для выставления балла.</p>
+            <button class="btn btn-ghost" onclick="resetProgress()">Сбросить и начать заново (для следующего ученика)</button>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = "adal_azamat_geom_prog_v1";
+        const SESSION_TTL_MS = 12 * 60 * 60 * 1000; // 12 часов
+
+        const taskTemplates = [
+            {
+                category: "Адал Азамат • Волонтёрство (1/4)",
+                variants: [
+                    { b1: 1, q: 2, n: 5 },
+                    { b1: 2, q: 2, n: 4 },
+                    { b1: 3, q: 2, n: 4 },
+                    { b1: 1, q: 3, n: 4 }
+                ],
+                buildText: (v) => `Арман запустил эстафету добрых дел (b₁ = ${v.b1}) и передал её одноклассникам. Каждый день каждый участник честно передаёт эстафету ещё ${v.q} ребятам (q = ${v.q}). Сколько новых участников присоединится ровно на ${v.n}-й день (b${v.n})?`
+            },
+            {
+                category: "Экологическая грамотность (2/4)",
+                variants: [
+                    { b1: 3, q: 2, n: 4 },
+                    { b1: 5, q: 2, n: 4 },
+                    { b1: 2, q: 3, n: 4 },
+                    { b1: 4, q: 2, n: 5 }
+                ],
+                buildText: (v) => `В первый день эко-акции класс собрал ${v.b1} кг макулатуры (b₁ = ${v.b1}). Каждый следующий день ребята собирали в ${v.q} раза больше (q = ${v.q}). Сколько килограммов макулатуры класс собрал в ${v.n}-й день акции (b${v.n})?`
+            },
+            {
+                category: "Финансовая грамотность (3/4)",
+                variants: [
+                    { b1: 500, q: 2, n: 4 },
+                    { b1: 300, q: 2, n: 4 },
+                    { b1: 200, q: 3, n: 3 },
+                    { b1: 400, q: 2, n: 4 }
+                ],
+                buildText: (v) => `Динара копит на подарок маме. В 1-ю неделю она отложила ${v.b1} тенге (b₁ = ${v.b1}), а каждую следующую увеличивала сумму взноса в ${v.q} раза (q = ${v.q}). Сколько тенге она отложит в ${v.n}-ю неделю (b${v.n})?`
+            },
+            {
+                category: "Цифровая гигиена • Антифейк (4/4)",
+                variants: [
+                    { b1: 4, q: 3, n: 3 },
+                    { b1: 5, q: 3, n: 3 },
+                    { b1: 2, q: 4, n: 3 },
+                    { b1: 3, q: 3, n: 4 }
+                ],
+                buildText: (v) => `Непроверенный слух отправили ${v.b1} знакомым (b₁ = ${v.b1}). На каждом следующем шаге каждый получивший пересылал сообщение ещё ${v.q} людям (q = ${v.q}). Сколько человек получат фейк ровно на ${v.n}-м шаге рассылки (b${v.n})?`
+            }
+        ];
+
+        let screenStage = "start"; // "start" | "quiz" | "reflection" | "result"
+        let generatedTasks = [];
+        let variantCode = "";
+        let currentTask = 0;
+        let score = 0;
+        let studentName = "";
+        let isTestActive = false;
+
+        let activeSeconds = 0;
+        let incidentCount = 0;
+        let penalizedIncidents = 0;
+        let splitFlags = 0;
+        let awaySecondsTotal = 0;
+        let awayStartTimestamp = null;
+        let timerInterval = null;
+
+        let trapSolved = false;
+        let trapAttempts = 0;
+
+        let baseWidth = window.innerWidth;
+        let baseHeight = window.innerHeight;
+
+        // --- БЛОК РАБОТЫ С LOCALSTORAGE ---
+        function saveState() {
+            try {
+                const state = {
+                    savedAt: Date.now(),
+                    screenStage,
+                    generatedTasks,
+                    variantCode,
+                    currentTask,
+                    score,
+                    studentName,
+                    isTestActive,
+                    activeSeconds,
+                    incidentCount,
+                    penalizedIncidents,
+                    splitFlags,
+                    awaySecondsTotal,
+                    awayStartTimestamp,
+                    trapSolved,
+                    trapAttempts,
+                    ref1: document.getElementById("ref1").value,
+                    ref2: document.getElementById("ref2").value,
+                    ref3: document.getElementById("ref3").value
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (e) {
+                // Игнорируем ошибку, если в браузере отключено хранилище (например, режим инкогнито)
+            }
+        }
+
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return;
+                const state = JSON.parse(raw);
+
+                // Если сессия устарела — очищаем
+                if (!state.savedAt || Date.now() - state.savedAt > SESSION_TTL_MS) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    return;
+                }
+
+                if (!state.screenStage || state.screenStage === "start") return;
+
+                screenStage = state.screenStage;
+                generatedTasks = state.generatedTasks || [];
+                variantCode = state.variantCode || "";
+                currentTask = state.currentTask || 0;
+                score = state.score || 0;
+                studentName = state.studentName || "";
+                isTestActive = Boolean(state.isTestActive);
+                activeSeconds = state.activeSeconds || 0;
+                incidentCount = state.incidentCount || 0;
+                penalizedIncidents = state.penalizedIncidents || 0;
+                splitFlags = state.splitFlags || 0;
+                awaySecondsTotal = state.awaySecondsTotal || 0;
+                awayStartTimestamp = state.awayStartTimestamp || null;
+                trapSolved = Boolean(state.trapSolved);
+                trapAttempts = state.trapAttempts || 0;
+
+                if (state.ref1) document.getElementById("ref1").value = state.ref1;
+                if (state.ref2) document.getElementById("ref2").value = state.ref2;
+                if (state.ref3) document.getElementById("ref3").value = state.ref3;
+                updateSlider("ref1", "val1");
+                updateSlider("ref2", "val2");
+                updateSlider("ref3", "val3");
+
+                document.getElementById("startScreen").classList.add("hidden");
+
+                if (screenStage === "quiz") {
+                    document.getElementById("quizScreen").classList.remove("hidden");
+                    document.getElementById("proctorBar").style.display = "flex";
+                    document.getElementById("timerDisplay").textContent = formatTime(activeSeconds);
+                    updateProctorBadge();
+                    loadTask();
+                    startTimer();
+
+                    // Если ученик закрыл вкладку во время теста и открыл снова — фиксируем возврат
+                    if (awayStartTimestamp !== null) {
+                        registerAwayEnd();
+                    }
+                } else if (screenStage === "reflection") {
+                    document.getElementById("reflectionScreen").classList.remove("hidden");
+                    if (trapSolved) {
+                        applyTrapSolvedUI();
+                    }
+                } else if (screenStage === "result") {
+                    renderFinalScreen();
+                }
+            } catch (e) {
+                localStorage.removeItem(STORAGE_KEY);
+            }
+        }
+
+        function resetProgress() {
+            if (!confirm("Точно очистить текущий результат и открыть стартовый экран для нового ученика?")) {
+                return;
+            }
+            localStorage.removeItem(STORAGE_KEY);
+            location.reload();
+        }
+        // ----------------------------------
+
+        history.pushState(null, "", location.href);
+        window.addEventListener("popstate", () => {
+            history.pushState(null, "", location.href);
+            if (isTestActive) {
+                registerAwayStart();
+                registerAwayEnd(1);
+            }
+        });
+
+        window.addEventListener("resize", () => {
+            if (!isTestActive) return;
+            const widthRatio = window.innerWidth / Math.max(1, baseWidth);
+            const heightRatio = window.innerHeight / Math.max(1, baseHeight);
+
+            if (widthRatio < 0.72 || heightRatio < 0.72) {
+                splitFlags++;
+                incidentCount++;
+                penalizedIncidents++;
+                saveState();
+                showAlert(
+                    true,
+                    "📐 Замечен разделённый экран",
+                    "Размер окна теста резко уменьшился. Во время работы «Адал Азамат» используйте одно окно без split screen.",
+                    "Применён штраф по коэффициенту K."
+                );
+            } else {
+                baseWidth = Math.max(baseWidth, window.innerWidth);
+                baseHeight = Math.max(baseHeight, window.innerHeight);
+            }
+        });
+
+        function generateIndividualVariant() {
+            let codes = [];
+            generatedTasks = taskTemplates.map((tpl) => {
+                const idx = Math.floor(Math.random() * tpl.variants.length);
+                codes.push(idx + 1);
+                const v = tpl.variants[idx];
+                return {
+                    category: tpl.category,
+                    text: tpl.buildText(v),
+                    answer: v.b1 * Math.pow(v.q, v.n - 1)
+                };
+            });
+            variantCode = codes.join("-");
+        }
+
+        function getHonestyCoeff() {
+            if (penalizedIncidents === 0) return 1.0;
+            if (penalizedIncidents === 1) return 0.85;
+            if (penalizedIncidents === 2) return 0.70;
+            return 0.50;
+        }
+
+        function startTest() {
+            const nameInput = document.getElementById("studentName").value.trim();
+            if (!nameInput) {
+                alert("Пожалуйста, введи своё имя и фамилию.");
+                return;
+            }
+            studentName = nameInput;
+            baseWidth = window.innerWidth;
+            baseHeight = window.innerHeight;
+            generateIndividualVariant();
+            isTestActive = true;
+            screenStage = "quiz";
+
+            document.getElementById("startScreen").classList.add("hidden");
+            document.getElementById("quizScreen").classList.remove("hidden");
+            document.getElementById("proctorBar").style.display = "flex";
+
+            saveState();
+            loadTask();
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (!document.hidden && document.hasFocus() && isTestActive) {
+                    activeSeconds++;
+                    document.getElementById("timerDisplay").textContent = formatTime(activeSeconds);
+                    if (activeSeconds % 5 === 0) {
+                        saveState();
+                    }
+                }
+            }, 1000);
+        }
+
+        function formatTime(sec) {
+            const m = String(Math.floor(sec / 60)).padStart(2, '0');
+            const s = String(sec % 60).padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function loadTask() {
+            const task = generatedTasks[currentTask];
+            document.getElementById("taskCategory").textContent = task.category;
+            document.getElementById("taskText").textContent = task.text;
+            const input = document.getElementById("answerInput");
+            input.value = "";
+            input.focus();
+        }
+
+        function submitAnswer() {
+            const val = parseFloat(document.getElementById("answerInput").value);
+            if (isNaN(val)) return;
+
+            if (val === generatedTasks[currentTask].answer) {
+                score++;
+            }
+
+            currentTask++;
+            if (currentTask < generatedTasks.length) {
+                saveState();
+                loadTask();
+            } else {
+                openReflection();
+            }
+        }
+
+        function openReflection() {
+            isTestActive = false;
+            screenStage = "reflection";
+            clearInterval(timerInterval);
+            saveState();
+
+            document.getElementById("quizScreen").classList.add("hidden");
+            document.getElementById("proctorBar").style.display = "none";
+            document.getElementById("reflectionScreen").classList.remove("hidden");
+        }
+
+        function applyTrapSolvedUI() {
+            const btn = document.getElementById("trapCorrectBtn");
+            const fb = document.getElementById("trapFeedback");
+            btn.classList.add("correct-pick");
+            btn.innerHTML = "2³ = 40 ✓";
+            fb.style.color = "var(--success)";
+            fb.textContent = "Верно! Показатель степени равен n − 1 = 4 − 1 = 3, поэтому 5 · 2³ = 40.";
+
+            const finishBtn = document.getElementById("toResultBtn");
+            finishBtn.disabled = false;
+            finishBtn.textContent = "Показать мой паспорт честности →";
+        }
+
+        function checkTrap(btn, isCorrect) {
+            if (trapSolved) return;
+            trapAttempts++;
+            const fb = document.getElementById("trapFeedback");
+
+            if (isCorrect) {
+                trapSolved = true;
+                applyTrapSolvedUI();
+            } else {
+                btn.classList.add("wrong-pick");
+                fb.style.color = "var(--warning)";
+                fb.textContent = "Здесь всё правильно. Посмотри внимательнее на показатель степени!";
+            }
+            saveState();
+        }
+
+        function updateSlider(sliderId, labelId) {
+            const val = document.getElementById(sliderId).value;
+            document.getElementById(labelId).textContent = `${val} / 5`;
+            if (screenStage === "reflection") {
+                saveState();
+            }
+        }
+
+        function showFinalResults() {
+            screenStage = "result";
+            saveState();
+            renderFinalScreen();
+        }
+
+        function renderFinalScreen() {
+            document.getElementById("reflectionScreen").classList.add("hidden");
+            document.getElementById("resultScreen").classList.remove("hidden");
+
+            const k = getHonestyCoeff();
+            const raw10 = (score / generatedTasks.length) * 10;
+            const final10 = Math.round(raw10 * k);
+
+            const r1 = Number(document.getElementById("ref1").value);
+            const r2 = Number(document.getElementById("ref2").value);
+            const r3 = Number(document.getElementById("ref3").value);
+            const avgRef = ((r1 + r2 + r3) / 3).toFixed(1);
+
+            document.getElementById("resNameTitle").textContent = studentName;
+            document.getElementById("finalScore10").textContent = `${final10} / 10`;
+            document.getElementById("formulaBreakdown").textContent =
+                `База: ${raw10.toFixed(1)} б. × K (${k.toFixed(2)}) = ${(raw10 * k).toFixed(2)} → ${final10} б.`;
+
+            document.getElementById("resVariant").textContent = `#${variantCode}`;
+            document.getElementById("resScore").textContent = `${score} из ${generatedTasks.length}`;
+            document.getElementById("resCoeff").textContent = `${k.toFixed(2)} (выходов: ${incidentCount})`;
+            document.getElementById("resTime").textContent = `${formatTime(activeSeconds)} / ${awaySecondsTotal} сек.`;
+            document.getElementById("resReflection").textContent =
+                `Ловушка: ${trapAttempts === 1 ? "с 1-й попытки" : `со ${trapAttempts}-й`} • ${avgRef}/5`;
+
+            const coeffEl = document.getElementById("resCoeff");
+            coeffEl.style.color = k === 1 ? "var(--success)" : k >= 0.85 ? "var(--warning)" : "var(--danger)";
+        }
+
+        function registerAwayStart() {
+            if (!isTestActive || awayStartTimestamp !== null) return;
+            awayStartTimestamp = Date.now();
+            saveState();
+        }
+
+        function registerAwayEnd(forcedSeconds = null) {
+            if (!isTestActive || awayStartTimestamp === null) return;
+            const diff = forcedSeconds !== null
+                ? forcedSeconds
+                : Math.max(1, Math.round((Date.now() - awayStartTimestamp) / 1000));
+            awaySecondsTotal += diff;
+            awayStartTimestamp = null;
+
+            incidentCount++;
+
+            if (incidentCount === 1) {
+                saveState();
+                showAlert(
+                    false,
+                    "👋 Первый выход прощён",
+                    "Если экран погас или ты случайно нажал «Назад» — штрафа нет. Со 2-го выхода начнёт снижаться коэффициент K.",
+                    `Пауза: ${diff} сек. • Текущий K = ${getHonestyCoeff().toFixed(2)}`
+                );
+            } else {
+                penalizedIncidents++;
+                saveState();
+                const note = diff >= 35
+                    ? `Отсутствие ${diff} сек. (больше обычного автовыключения экрана) учтено как выход из окна.`
+                    : `Выход №${incidentCount} (${diff} сек.). Коэффициент K пересчитан.`;
+                showAlert(
+                    true,
+                    "⚠️ Снижен коэффициент честности",
+                    note,
+                    `Текущий K = ${getHonestyCoeff().toFixed(2)} • Всего вне фокуса: ${awaySecondsTotal} сек.`
+                );
+            }
+        }
+
+        function showAlert(isPenalized, title, message, info) {
+            updateProctorBadge();
+            const overlay = document.getElementById("cheatAlert");
+            overlay.classList.toggle("is-penalized", isPenalized);
+            document.getElementById("alertTitle").textContent = title;
+            document.getElementById("alertMessage").textContent = message;
+            document.getElementById("awayTimeInfo").textContent = info;
+            overlay.style.display = "flex";
+        }
+
+        document.addEventListener("visibilitychange", () => {
+            if (!isTestActive) return;
+            if (document.hidden) {
+                registerAwayStart();
+            } else {
+                registerAwayEnd();
+            }
+        });
+
+        window.addEventListener("blur", () => {
+            if (!isTestActive) return;
+            registerAwayStart();
+        });
+
+        window.addEventListener("focus", () => {
+            if (!isTestActive) return;
+            if (!document.hidden) {
+                registerAwayEnd();
+            }
+        });
+
+        window.addEventListener("pagehide", () => {
+            if (isTestActive) {
+                registerAwayStart();
+            }
+        });
+
+        function updateProctorBadge() {
+            const k = getHonestyCoeff();
+            const badge = document.getElementById("coeffBadge");
+            badge.innerHTML = `🛡 K<sub>чест</sub> = ${k.toFixed(2)}`;
+            badge.className = "badge " + (k === 1 ? "badge-ok" : k >= 0.85 ? "badge-warn" : "badge-danger");
+        }
+
+        function closeAlert() {
+            document.getElementById("cheatAlert").style.display = "none";
+        }
+
+        document.getElementById("answerInput").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") submitAnswer();
+        });
+
+        // Восстанавливаем состояние при загрузке страницы
+        window.addEventListener("DOMContentLoaded", loadState);
+    </script>
+</body>
+</html>
